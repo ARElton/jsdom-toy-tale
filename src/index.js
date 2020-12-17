@@ -103,12 +103,28 @@ const allToys = document.querySelector("#toy-collection")
 
 allToys.addEventListener("click", function (event) {
   if (event.target.dataset.buttonType ==="upvote") { 
+    const id = event.target.dataset.id 
+    
     const toyDiv = event.target.closest("div.card")
     const likesP = toyDiv.querySelector("p")
     const numOfLikes = parseInt(likesP.textContent) + 1
     likesP.textContent = numOfLikes + " likes"
-  }
-})
+
+    fetch(`http://localhost:3000/toys/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        likes: numOfLikes
+      }),
+    }) 
+      .then(resp => resp.json())
+      .then((newLikeData) => {
+        renderOneListing(newLikeData)
+      })
+    
+}})
 
 });
 
